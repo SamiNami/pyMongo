@@ -9,4 +9,4 @@ def root():
     return "Kappa ZUppa"
 
 bottle.debug(True)
-bottle.run(host='localhost', port=8080)
+bottle.run(host='localhost', port=8080, reloader=True)
