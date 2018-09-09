@@ -69,3 +69,18 @@ db.zips.aggregate([
     }
   }
 ]);
+
+// match filters the results, pushes it through if the values match
+db.zips.aggregate([
+  {
+    $match: {
+      pop: { $gt: 100000 }
+    }
+  }
+]);
+
+db.zips.aggregate([
+  {
+    $sort: { state: 1, city: 1 }
+  }
+]);
