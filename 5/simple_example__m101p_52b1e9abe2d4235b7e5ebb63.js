@@ -1,7 +1,10 @@
+// Grouping compares the values that are inside that group
+
 // use agg
 db.products.aggregate([
   {
     $group: {
+      // _id = what you search on
       _id: "$manufacturer",
       category: { $sum: 1 }
     }
@@ -22,6 +25,47 @@ db.zips.aggregate([
     $group: {
       _id: "$state",
       population: { $sum: "$pop" }
+    }
+  }
+]);
+// avg population
+db.zips.aggregate([
+  {
+    $group: {
+      _id: "$state",
+      average_pop: { $avg: "$pop" }
+    }
+  }
+]);
+// addToSet, only adds if it's not already there
+db.zips.aggregate([
+  {
+    $group: {
+      _id: "$city",
+      postal_codes: { $addToSet: "$_id" }
+    }
+  }
+]);
+// find the max population for state
+db.zips.aggregate([
+  {
+    $group: {
+      _id: "$state",
+      pop: { $max: "$pop" }
+    }
+  }
+]);
+
+// projecting is when you change the data in the pipline
+// remove the id field, keep pop and state, city to lowercase, zip === _id
+db.zips.aggregate([
+  {
+    $project: {
+      _id: 0,
+      pop: 1,
+      state: 1,
+      city: { $toLower: "$city" },
+      zip: "$_id"
     }
   }
 ]);
