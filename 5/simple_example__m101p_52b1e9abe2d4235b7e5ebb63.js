@@ -107,3 +107,18 @@ db.posts.aggregate([
     $sort: { numberOfComments: -1 }
   }
 ]);
+
+db.zips.aggregate([
+  {
+    $match: {
+      pop: { $gt: 25000 },
+      state: { $in: ["CA", "NY"] }
+    }
+  },
+  {
+    $group: {
+      _id: null,
+      avg: { $avg: "$pop" }
+    }
+  }
+]);
