@@ -122,3 +122,27 @@ db.zips.aggregate([
     }
   }
 ]);
+
+//   _id: { class_id: "$class_id", student_id: "$student_id" },
+db.grades.aggregate([
+  { $unwind: "$scores" },
+  { $match: { "scores.type": { $ne: "quiz" } } },
+  {
+    $group: {
+      _id: {
+        class_id: "$class_id",
+        student_id: "$student_id"
+      },
+      avg_per_student: { $avg: "$scores.score" }
+    }
+  },
+  {
+    $group: {
+      _id: "$_id.class_id",
+      avg: { $avg: "$avg_per_student" }
+    }
+  },
+  {
+    $sort: { avg: -1 }
+  }
+]);
