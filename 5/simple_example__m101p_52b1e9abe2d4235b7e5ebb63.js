@@ -84,3 +84,26 @@ db.zips.aggregate([
     $sort: { state: 1, city: 1 }
   }
 ]);
+
+// $first and $last are used after a sort phase
+// unwind brakes up an array into multiple documents with the remainder of the not unwinded part
+// aggregation options: explain, allowDiskUse
+// cursor={} returns a cursor from aggregation
+
+// limitations for aggergate: 100mb memory limit for the pipeline, use "allowDiskUse"
+// 16mb limit per document in python, use "cursor"
+
+db.posts.aggregate([
+  {
+    $unwind: "$comments"
+  },
+  {
+    $group: {
+      _id: "$comments.author",
+      numberOfComments: { $sum: 1 }
+    }
+  },
+  {
+    $sort: { numberOfComments: -1 }
+  }
+]);
