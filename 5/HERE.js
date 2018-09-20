@@ -167,18 +167,15 @@ db.zips.aggregate([
 db.messages.aggregate([
     { $unwind: '$headers.To' },
     {
-        $group: {
-            _id: '$headers.From',
-            To: { $addToSet: '$headers.To' }
-        }
+        $project: {
+             from: '$headers.From', to: "$headers.To", _id: 1
+         }
     },
     {
-        $project: { 'from': '$_id', to: 1 , _id: 0}
-    }
-]);
-
-db.messages.aggregate([
-    {
-        $unwind: '$headers.To'
-    }
+        $group: {
+            _id: { from: '$from', to: "$to"},
+            total: { $sum: 1 }
+        }
+    },
+    { $sort : { total : -1 } }
 ]);
